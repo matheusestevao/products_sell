@@ -7,7 +7,9 @@ class AuthMiddleware
     private $notValidate = [
         '/login', 
         '/',
-        '/authenticate'
+        '/authenticate',
+        '/sales/create',
+        '/sales/store'
     ];
 
     public function handle()
