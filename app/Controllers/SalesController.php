@@ -55,6 +55,9 @@ class SalesController extends Controller
 
     public function show($id)
     {
+        $hash = password_hash('123', PASSWORD_DEFAULT);
+        var_dump($hash);exit;
+        
         $sale = $this->db->read('sales', ['id = ? '], [$id]);
         $products = $this->db->read('sale_products', ['sale_id = ?'], [$id]);
 
