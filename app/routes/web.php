@@ -31,6 +31,7 @@ $router->group(['middleware' => AuthMiddleware::class], function () use ($router
     $router->get('/products/edit/:id', 'ProductsController@edit');
     $router->post('/products/update/:id', 'ProductsController@update');
     $router->post('/products/delete', 'ProductsController@delete');
+    $router->post('/products/info_sale', 'ProductsController@infoSale');
 
     $router->get('/sales', 'SalesController@index');
     $router->get('/sales/show/:id', 'SalesController@show');

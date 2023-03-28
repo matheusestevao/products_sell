@@ -15,31 +15,52 @@ class SalesController extends Controller
 
     public function create()
     {
-        return $this->view('sales/create');
+        $products = $this->db->read('products');
+
+        return $this->view('sales/create', [
+            'products' => $products
+        ]);
     }
 
     public function store()
     {
         try {
             $data = [
-                'name' => $_POST['name'],
-                'tax' => $_POST['tax'] * 100
+                'total' => $_POST['total'] * 100,
+                'total_tax' => $_POST['total_tax'] * 100,
+                'created_at' => date('Y-m-d H:i:s')
             ];
+    
+            $sale = $this->db->create('sales', $data);
 
-            $this->db->create('type_products', $data);
+            unset($_POST['insertSaleProduct_idComponent']['X']);
 
-            header('Location: /type_products');
+            foreach ($_POST['insertSaleProduct_idComponent'] as $key => $value) {
+                $product = [
+                    'sale_id' => $sale,
+                    'product_id' => $_POST['insertSaleProduct_product_id'][$key],
+                    'amount' => $_POST['insertSaleProduct_amount'][$key],
+                    'value_amount' => $_POST['insertSaleProduct_value_amount'][$key] * 100,
+                    'value_amount_tax' => $_POST['insertSaleProduct_value_amount_tax'][$key] * 100
+                ];
+
+                $this->db->create('sale_products', $product);
+            }
+
+            header('Location: /sales');
         } catch (\Throwable $th) {
             echo $th->getMessage();
         }
     }
 
-    public function edit($id)
+    public function show($id)
     {
-        $typeProduct = $this->db->read('type_products', ['id = ? '], [$id]);
-        
-        return $this->view('type_products/form', [
-            'typeProduct' => $typeProduct[0]
+        $sale = $this->db->read('sales', ['id = ? '], [$id]);
+        $products = $this->db->read('sale_products', ['sale_id = ?'], [$id]);
+
+        return $this->view('sales/view', [
+            'sale' => $sale[0],
+            'products' => $products
         ]);
     }
 

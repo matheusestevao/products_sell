@@ -11,12 +11,12 @@ $(document).ready(function() {
                     typeProduct: typeProduct
                 },
                 success: function(data) {
-                    let newValue = (value * ((data.tax / 100) + 1)) 
+                    let newValue = (value * (1 + (data.tax / 100) / 100)) 
                     
                     $('.value-tax').val(newValue / 10);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                    console.log(errorThrown);
+                    alert(errorThrown);
                 }
             });
         }
