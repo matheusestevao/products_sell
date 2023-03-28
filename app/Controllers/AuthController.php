@@ -11,17 +11,19 @@ class AuthController extends Controller
 
     public function authenticate()
     {
-        $where = ['email = ?', 'password = ?'];
-        $params = [$_POST['email'], $_POST['password']];
+        $where = ['email = ?'];
+        $params = [$_POST['email']];
 
         $validate = $this->db->read('users', $where, $params);
 
         if (!empty($validate)) {
-            $_SESSION['authenticated'] = true;
-            $_SESSION['user'] = $validate;
+            if(password_verify($_POST['password'], $validate[0]['password'])) {
+                $_SESSION['authenticated'] = true;
+                $_SESSION['user'] = $validate;
 
-            header('Location: ' . URL_BASE . '/');
-            exit;
+                header('Location: ' . URL_BASE . '/');
+                exit;
+            }
         } else {
             return $this->view('auth/login', [
                 'error' => 'Usuário ou senha inválidos'
