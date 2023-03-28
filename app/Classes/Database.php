@@ -53,7 +53,9 @@ class Database
             $stmt->bindValue($index + 1, $value);
         }
         
-        return $stmt->execute();
+        $stmt->execute();
+        
+        return $this->pdo->lastInsertId();
     }
     
     public function update(

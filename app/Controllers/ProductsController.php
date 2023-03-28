@@ -59,14 +59,42 @@ class ProductsController extends Controller
         try {
             $data = [
                 'name' => $_POST['name'],
-                'tax' => $_POST['tax'] * 100
+                'value' => $_POST['value'] * 100
             ];
 
-            $this->db->update('type_products', $data, $id);
+            $this->db->update('products', $data, $id);
 
-            header('Location: /type_products');
+            header('Location: /products');
         } catch (\Throwable $th) {
             echo $th->getMessage();
+        }
+    }
+
+    public function infoSale()
+    {
+        try {
+            $product = $this->db->read('products', ['id = ?'], [$_POST['product']])[0];
+            $typeProduct = $this->db->read('type_products', ['id = ? '], [$product['type_product_id']])[0];
+
+            $valueTax = ($product['value'] * (1 + ($typeProduct['tax'] / 100) / 100));
+            
+            $valueTotal = $_POST['amount'] * $product['value'];
+            $valueTotalTax = $_POST['amount'] * $valueTax;
+
+            http_response_code(200);
+            header('Content-Type: application/json');
+
+            echo json_encode([
+                'value_amount' => $product['value'] / 100,
+                'value_tax' => $valueTax / 100,
+                'value_total' => $valueTotal / 100,
+                'value_total_tax' => $valueTotalTax / 100
+            ]);
+        } catch (\Throwable $th) {
+            http_response_code(404);
+            header('Content-Type: application/json');
+
+            echo json_encode(['message' => $th->getMessage()]);
         }
     }
 }

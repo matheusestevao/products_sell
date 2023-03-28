@@ -24,15 +24,17 @@ CREATE TABLE products (
 CREATE TABLE sales (
   id INT AUTO_INCREMENT PRIMARY KEY,
   total INT NOT NULL,
+  total_tax INT NOT NULL,
   created_at DATETIME NOT NULL
 );
 
-CREATE TABLE sele_products (
+CREATE TABLE sale_products (
   id INT AUTO_INCREMENT PRIMARY KEY,
   sale_id INT NOT NULL,
   product_id INT NOT NULL,
   amount INT NOT NULL,
-  total INT NOT NULL,
+  value_amount INT NOT NULL,
+  value_amount_tax INT NOT NULL,
   CONSTRAINT fk_product_id FOREIGN KEY (product_id) REFERENCES products(id),
   CONSTRAINT fk_sale FOREIGN KEY (sale_id) REFERENCES sales(id)
 );
